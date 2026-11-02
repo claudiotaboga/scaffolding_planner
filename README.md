@@ -22,6 +22,8 @@ python samples/generate_sample_block.py          # DXF + PDF + project.json (alr
 python -m pytest -q                              # validation tests 1-8
 PYTHONPATH=backend uvicorn vsr.api.app:app --port 8000
 ```
+**Online on Azure:** see [`docs/DEPLOYMENT_AZURE.md`](docs/DEPLOYMENT_AZURE.md) (App Service, Microsoft login, auto-deploy from GitHub).
+
 DWG import needs the [ODA File Converter](https://www.opendesign.com/guestfiles/oda_file_converter) on the server: `export ODA_FILE_CONVERTER=/path/to/ODAFileConverter`.
 
 ## What's in the MVP
