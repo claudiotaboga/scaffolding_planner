@@ -1,0 +1,19 @@
+# Tube-and-coupler infill — brand-neutral (EN 39 tube / EN 74 couplers).
+# Infills close gaps the modular grid cannot close. Used by every system.
+version: "2026.11-r1"
+tube:
+  code: TC-TUBE-483
+  name: "Tube 48.3x3.2 (EN 39 type 4)"
+  weight_kg_per_m: {value: 3.56, status: estimate, source: "EN 39 nominal"}
+coupler:
+  code: TC-COUP-DBL
+  name: "Double coupler EN 74"
+  weight_kg: {value: 1.25, status: estimate, source: "EN 74 typical"}
+longitudinal_infill:      # closes a residual gap at a bounded run end, per lift
+  tubes_extra_over_lines: 2   # tubes = lines present + 2 guardrail tubes
+  couplers_per_tube: 2
+  overlap_m: 0.30
+transverse_infill:        # closes a deck-to-hull gap, per bay per lift
+  tubes_per_bay: 3
+  couplers_per_tube: 2
+  overlap_m: 0.30

@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scaffold Comparison Report</title>
+<style>
+  body { font: 13px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: #1d232b; max-width: 980px; margin: 24px auto; padding: 0 16px; background: #fff; }
+  h1 { font-size: 22px; margin: 0 0 4px; } h2 { font-size: 16px; margin: 22px 0 6px; border-bottom: 2px solid #10243e; padding-bottom: 3px; }
+  .muted { color: #6b7480; } .reco { font-size: 26px; font-weight: 700; margin: 6px 0; }
+  table { border-collapse: collapse; width: 100%; } th, td { border-bottom: 1px solid #d9dde3; padding: 4px 6px; text-align: left; }
+  th { background: #f0f2f5; } td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .badge { display: inline-block; padding: 1px 7px; border-radius: 10px; font-size: 11px; font-weight: 600; border: 1px solid; }
+  .high { color: #15803d; } .medium { color: #b45309; } .low { color: #b91c1c; }
+  .warn { background: #fff7ed; border: 1px solid #fed7aa; padding: 6px 10px; border-radius: 5px; margin: 6px 0; }
+  .disc { font-size: 11px; border: 1px solid #d9dde3; padding: 8px; margin-top: 18px; background: #fafafa; }
+  .bars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  @media print { button { display: none; } body { margin: 0; } }
+</style>
+</head>
+<body>
+<button onclick="window.print()" style="float:right">Print / PDF</button>
+<div id="r">Loading…</div>
+<script>
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const fmt = (v, d = 2) => v === null || v === undefined ? "–" : (typeof v === "number" ? v.toLocaleString("en-GB", { maximumFractionDigits: d }) : esc(v));
+const COL = { SM8: "#c2410c", LAYHER_LW: "#1d4ed8" };
+function bars(title, unit, vals) {
+  const max = Math.max(...vals.map((v) => v[1]), 1e-9);
+  return `<div><b>${esc(title)}</b> <span class="muted">${esc(unit)}</span><svg viewBox="0 0 300 ${vals.length * 28 + 6}" width="100%">${vals.map(([s, v], i) => `<rect x="90" y="${i * 28 + 4}" width="${(190 * v / max).toFixed(1)}" height="18" fill="${COL[s] || "#6d28d9"}"/><text x="0" y="${i * 28 + 17}" font-size="12">${esc(s)}</text><text x="${(95 + 190 * v / max).toFixed(1)}" y="${i * 28 + 17}" font-size="11">${fmt(v, 1)}</text>`).join("")}</svg></div>`;
+}
+(async () => {
+  const id = new URLSearchParams(location.search).get("run");
+  const run = await (await fetch(`/api/runs/${encodeURIComponent(id)}`)).json();
+  const c = run.comparison, sn = run.snapshot, S = Object.keys(run.results);
+  const M = (s, k) => run.results[s].metrics[k].value;
+  const est = S.filter((s) => M(s, "estimate_weight_share") > 0);
+  const errs = S.flatMap((s) => run.results[s].layout.violations.filter((v) => v.severity === "error").map((v) => `${s}: ${v.message}`));
+  document.getElementById("r").innerHTML = `
+  <div class="muted">VARD Shipyards Romania · Scaffold Planner · comparison report</div>
+  <h1>${esc(sn.area.name)}</h1>
+  <div class="muted">Area ${esc(sn.area.id)} · ${esc(sn.area.area_type)} · run <code>${esc(run.run_id)}</code> · ${esc(run.created)} ·
+    geometry <span class="badge ${esc(run.geometry_confidence)}">${esc(run.geometry_confidence)} confidence</span> (${esc(sn.geometry.source)} ${esc(sn.geometry.source_file || "")}${sn.geometry.frame !== null ? ", FR " + esc(sn.geometry.frame) : ""})</div>
+  <h2>Recommendation</h2>
+  <div class="reco" style="color:${COL[c.recommended] || "#000"}">${esc(run.results[c.recommended].system_name)}${c.margin_pct !== null ? ` <span class="muted" style="font-size:15px">— margin ${fmt(c.margin_pct, 1)}% over ${esc(c.runner_up)}</span>` : ""}</div>
+  <ol>${c.reasons.map((r) => `<li>${esc(r)}</li>`).join("")}</ol>
+  <ul>${c.sensitivity.map((s) => `<li>${esc(s.text)}</li>`).join("")}</ul>
+  ${errs.length ? `<div class="warn"><b>Rule violations:</b> ${errs.map(esc).join("; ")}</div>` : ""}
+  ${est.map((s) => `<div class="warn">${esc(s)}: ${fmt(100 * M(s, "estimate_weight_share"), 0)}% of weight based on <b>estimate</b> figures — load the current price list / catalogue to verify.</div>`).join("")}
+  <h2>Key figures</h2>
+  <div class="bars">${bars("Crew-hours (erection)", "man-h", S.map((s) => [s, M(s, "crew_hours")]))}${bars("Material", "t", S.map((s) => [s, M(s, "weight_t")]))}${bars("Infill units", "count", S.map((s) => [s, M(s, "infill_units")]))}</div>
+  <table><tr><th>Metric</th>${S.map((s) => `<th class="num">${esc(s)}</th>`).join("")}</tr>
+  ${[["area_m2", "Face area (m²)"], ["crew_hours", "Crew-hours"], ["elapsed_h", `Elapsed (h, crew ${sn.crew})`], ["m2_per_man_hour", "m² per man-hour"], ["weight_t", "Weight (t)"], ["kg_per_m2", "kg handled per m²"], ["nodes", "Nodes"], ["wedges", "Wedges"], ["infill_units", "Infill units"], ["infill_couplers", "Infill couplers"], ["unsecured_exposure_h", "Unsecured-connection exposure (man-h)"], ["unprotected_exposure_if_no_agr_h", "Unprotected exposure if no advance guardrail (man-h)"], ["rental_eur", "Rental (EUR)"], ["labour_eur", "Labour erect+dismantle (EUR)"], ["transport_eur", "Transport (EUR)"], ["total_cost_eur", "Total cost (EUR)"]].map(([k, l]) => `<tr><td>${esc(l)}</td>${S.map((s) => `<td class="num">${fmt(M(s, k), 2)}</td>`).join("")}</tr>`).join("")}</table>
+  <h2>Scoring</h2>
+  <table><tr><th>Criterion</th><th class="num">Weight</th>${S.map((s) => `<th class="num">${esc(s)} raw</th><th class="num">score</th>`).join("")}</tr>
+  ${c.table.map((r) => `<tr><td>${esc(r.label)} <span class="muted">${esc(r.unit)}</span></td><td class="num">${fmt(r.weight)}</td>${S.map((s) => `<td class="num">${fmt(r.systems[s].raw, 3)}</td><td class="num">${fmt(r.systems[s].normalised, 3)}</td>`).join("")}</tr>`).join("")}
+  <tr><th>Total</th><th></th>${S.map((s) => `<th></th><th class="num">${fmt(c.totals[s], 4)}</th>`).join("")}</tr></table>
+  <p class="muted">${esc(c.method)}</p>
+  <h2>Assumptions &amp; versions</h2>
+  <ul>
+    <li>Clearance target ${fmt(sn.area.clearance_target_m)} m, min gap ${fmt(sn.area.gap_min_m)} m, load class ${sn.area.load_class}, anchorage ${esc(sn.area.anchorage)}, advance guardrail ${sn.area.advance_guardrail ? "yes" : "no"}, rental ${fmt(sn.area.rental_months)} month(s).</li>
+    ${S.map((s) => { const v = sn.versions[s]; return `<li><b>${esc(s)}</b>: catalogue ${esc(v.catalogue.catalogue_version)} (${esc(v.catalogue.file)}, sha ${esc(v.catalogue.sha256)}, ${v.catalogue.estimates} estimate items); time standard ${esc(v.time_standard.version)} <b>[${esc(v.time_standard.status)}]</b> (sha ${esc(v.time_standard.sha256)}).</li>`; }).join("")}
+    <li>Settings ${esc(sn.settings.version)} (sha ${esc(sn.settings.sha256)}); tube &amp; coupler ${esc(sn.common.version)}.</li>
+    <li>Time standards are provisional: one calibration point (VSR reference tower, Rev02 slide 7). Recalibrate with Annex A field data.</li>
+  </ul>
+  <div class="disc"><b>Disclaimer.</b> ${esc(run.disclaimer)}</div>`;
+})();
+</script>
+</body>
+</html>

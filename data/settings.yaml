@@ -1,0 +1,36 @@
+# Global settings — editable. Stamped (with hash) into every run.
+version: "2026.11-r1"
+
+costs:
+  labour_eur_per_man_h: {value: 18.0, status: estimate, source: "VSR placeholder; replace with fully loaded rate"}
+  truck_eur: {value: 450.0, status: estimate, source: "placeholder"}
+  t_per_truck: {value: 12.0, status: estimate, source: "volume-limited scaffold load"}
+  cost_basis: rental          # rental | purchase
+  per_system:
+    SM8:       {rental_eur_per_t_month: 160.0, purchase_eur_per_t: 2000.0, status: estimate, source: "VSR benchmark 140-180 EUR/t/month; purchase = placeholder, replace with quote"}
+    LAYHER_LW: {rental_eur_per_t_month: 160.0, purchase_eur_per_t: 2000.0, status: estimate, source: "VSR benchmark 140-180 EUR/t/month; purchase = placeholder, replace with quote"}
+  default:   {rental_eur_per_t_month: 160.0, purchase_eur_per_t: 2000.0, status: estimate, source: "fallback for systems without own cost entry"}
+
+scoring:
+  weights: {productivity: 0.30, material: 0.25, safety: 0.20, fit: 0.15, fleet_fit: 0.10}
+  dominant_system: SM8          # yard's current dominant family (user-set)
+  fleet_fit_dominant: 1.0
+  fleet_fit_other: 0.5
+
+fleet:
+  complexity_cost_eur_per_year: 40000.0   # second system: separate stock, training, spares (user-set)
+  vessel_build_months: 10
+
+defaults:
+  clearance_target_m: 0.20
+  gap_min_m: 0.05
+  run_tolerance_m: 0.20
+  max_overhang_m: 1.00
+  min_platform_width_m: 0.90
+  load_class: 4
+  rental_months: 1.0
+
+disclaimer: >-
+  Planning and comparison aid only — not a structural design or certification tool. Every scaffold must be
+  designed and approved per the manufacturer's approval (Layher DIBt approvals, SM8 ministerial authorisation),
+  EN 12810 / EN 12811 and Romanian OSH rules, and inspected by a competent person before use.

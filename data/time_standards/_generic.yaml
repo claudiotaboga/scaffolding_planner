@@ -1,0 +1,48 @@
+standard_id: TS-GENERIC
+system_id: _GENERIC
+version: PROV-2026.11-r1
+status: provisional-generic
+derivation: Base relative weights, scale 1.0. Used for systems without their own time
+  standard.
+crew_reference: 5
+unit: man-seconds per action
+scale_factor: 1.0
+base_weights:
+  place_base_jack: 30
+  place_standard: 45
+  place_ledger: 30
+  place_transom: 30
+  place_guardrail: 25
+  place_diagonal: 40
+  place_deck: 25
+  place_hatch: 60
+  place_toe_board: 25
+  place_bracket: 50
+  place_tie: 240
+  secure_wedge: 10
+  advance_guardrail: 60
+actions:
+  place_base_jack: 30
+  place_standard: 45
+  place_ledger: 30
+  place_transom: 30
+  place_guardrail: 25
+  place_diagonal: 40
+  place_deck: 25
+  place_hatch: 60
+  place_toe_board: 25
+  place_bracket: 50
+  place_tie: 240
+  secure_wedge: 10
+  advance_guardrail: 60
+infill_crew_hours_per_unit: 4.5
+dismantle_factor: 0.6
+crew_efficiency:
+  1: 0.85
+  2: 0.95
+  3: 1.0
+  4: 1.0
+  5: 1.0
+  6: 0.95
+  8: 0.9
+  10: 0.85

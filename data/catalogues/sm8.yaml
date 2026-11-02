@@ -1,0 +1,66 @@
+# Marcegaglia SM8 — system catalogue
+# Every figure carries status (verified | estimate) and source. Codes are VSR-internal
+# placeholders; map `article_no` to the manufacturer article numbers when available.
+system_id: SM8
+name: Marcegaglia SM8
+manufacturer: Marcegaglia
+catalogue_version: "2026.11-r1"
+default_source: "SM8 user manual / Marcegaglia catalogue"
+mixing_with_other_brands: false
+
+node: {type: "octagonal plate", holes: 8, pitch_m: 0.5, wedge: manual}
+lift_height_m: 2.0
+bay_lengths_m: [1.80, 2.50, 3.00]
+bay_widths_m: [0.81, 1.14]
+
+rules:
+  max_gap_without_bracket_m: {value: 0.20, status: verified, source: "SM8 manual: max distance from structure without brackets"}
+  tie_area_m2: {value: 22.0, status: verified, source: "SM8 manual: one anchor every 22 m2 of facade"}
+  load_class_by_bay: {value: {"1.80": 4, "2.50": 4, "3.00": 4}, status: verified, source: "SM8 manual: load class 4 (3 kN/m2)"}
+  decks_per_width: {value: {"0.81": 2, "1.14": 3}, status: estimate, source: "330 mm steel decks; to be confirmed with SM8 manual deck layout"}
+  bracket_decks: {value: {"0.81": 2, "1.14": 3}, status: estimate, source: "330 mm steel decks on brackets"}
+  diagonal_every_n_bays: {value: 5, status: estimate, source: "VSR default rule (editable)"}
+  free_standing_max_height_to_base: {value: 4.0, status: estimate, source: "VSR default rule; verify against manufacturer approval"}
+  advance_guardrail_available: {value: true, status: estimate, source: "generic advance guardrail assumed for both systems"}
+
+hatch:
+  code: SM8-HATCH-250
+  bay_length_m: 2.50
+  replaces_decks: 2
+
+components:
+  # Standards (verified)
+  - {code: SM8-STD-050, role: standard, length_m: 0.5, weight_kg: 2.83, status: verified, name: "Standard 0.5 m"}
+  - {code: SM8-STD-100, role: standard, length_m: 1.0, weight_kg: 5.17, status: verified, name: "Standard 1.0 m"}
+  - {code: SM8-STD-150, role: standard, length_m: 1.5, weight_kg: 7.52, status: verified, name: "Standard 1.5 m"}
+  - {code: SM8-STD-200, role: standard, length_m: 2.0, weight_kg: 9.86, status: verified, name: "Standard 2.0 m"}
+  - {code: SM8-STD-250, role: standard, length_m: 2.5, weight_kg: 12.20, status: verified, name: "Standard 2.5 m"}
+  - {code: SM8-STD-300, role: standard, length_m: 3.0, weight_kg: 14.54, status: verified, name: "Standard 3.0 m"}
+  - {code: SM8-STD-400, role: standard, length_m: 4.0, weight_kg: 18.40, status: verified, name: "Standard 4.0 m"}
+  # Ledgers (verified) — used as ledgers, transoms and guardrails
+  - {code: SM8-LED-081, role: ledger, length_m: 0.81, weight_kg: 3.60, status: verified, name: "Ledger 0.81 m"}
+  - {code: SM8-LED-114, role: ledger, length_m: 1.14, weight_kg: 4.80, status: verified, name: "Ledger 1.14 m"}
+  - {code: SM8-LED-180, role: ledger, length_m: 1.80, weight_kg: 7.35, status: verified, name: "Ledger 1.80 m"}
+  - {code: SM8-LED-250, role: ledger, length_m: 2.50, weight_kg: 10.00, status: verified, name: "Ledger 2.50 m"}
+  - {code: SM8-LED-300, role: ledger, length_m: 3.00, weight_kg: 11.88, status: verified, name: "Ledger 3.00 m"}
+  # Face diagonals 2000 x bay (verified)
+  - {code: SM8-DIA-180, role: diagonal, length_m: 1.80, weight_kg: 6.96, status: verified, name: "Diagonal 2000x1800"}
+  - {code: SM8-DIA-250, role: diagonal, length_m: 2.50, weight_kg: 7.82, status: verified, name: "Diagonal 2000x2500"}
+  - {code: SM8-DIA-300, role: diagonal, length_m: 3.00, weight_kg: 14.82, status: verified, name: "Diagonal 2000x3000"}
+  # Steel decks 330 mm (verified)
+  - {code: SM8-DECK-180, role: deck, length_m: 1.80, width_m: 0.33, weight_kg: 10.80, status: verified, name: "Steel deck 0.33x1.80"}
+  - {code: SM8-DECK-250, role: deck, length_m: 2.50, width_m: 0.33, weight_kg: 14.38, status: verified, name: "Steel deck 0.33x2.50"}
+  - {code: SM8-DECK-300, role: deck, length_m: 3.00, width_m: 0.33, weight_kg: 19.90, status: verified, name: "Steel deck 0.33x3.00 (Securdeck)"}
+  - {code: SM8-HATCH-250, role: hatch, length_m: 2.50, width_m: 0.66, weight_kg: 32.38, status: verified, name: "Hatch deck alu/ply 2.50x0.66 with ladder"}
+  # Toe boards
+  - {code: SM8-TOE-180, role: toe_board, length_m: 1.80, weight_kg: 6.70, status: verified, name: "Toe board 1.80 m"}
+  - {code: SM8-TOE-250, role: toe_board, length_m: 2.50, weight_kg: 8.20, status: verified, name: "Toe board 2.50 m"}
+  - {code: SM8-TOE-300, role: toe_board, length_m: 3.00, weight_kg: 9.48, status: verified, name: "Toe board 3.00 m"}
+  - {code: SM8-TOE-081, role: toe_board, length_m: 0.81, weight_kg: 3.30, status: estimate, name: "End toe board 0.81 m (not in brief data)"}
+  - {code: SM8-TOE-114, role: toe_board, length_m: 1.14, weight_kg: 4.30, status: estimate, name: "End toe board 1.14 m (not in brief data)"}
+  # Brackets (verified)
+  - {code: SM8-BRK-081, role: bracket, length_m: 0.81, weight_kg: 6.58, status: verified, name: "Bracket (mensola) 0.81 m"}
+  - {code: SM8-BRK-114, role: bracket, length_m: 1.14, weight_kg: 7.68, status: verified, name: "Bracket (mensola) 1.14 m"}
+  # Base and ties (estimates — not in brief data)
+  - {code: SM8-JACK-060, role: base_jack, length_m: 0.60, weight_kg: 3.60, status: estimate, name: "Adjustable base jack 0.60 m"}
+  - {code: SM8-TIE-050, role: tie, length_m: 0.50, weight_kg: 3.20, status: estimate, name: "Wall tie tube 0.5 m + coupler"}

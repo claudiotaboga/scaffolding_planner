@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VSR Scaffold Planner</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">VSR Scaffold Planner <span class="ver">MVP · 2D sections</span></div>
+  <select id="projectSel" aria-label="Project"></select>
+  <nav id="tabs">
+    <button data-tab="areas" class="on">Areas &amp; simulation</button>
+    <button data-tab="drawings">Drawings &amp; sections</button>
+    <button data-tab="summary">Vessel summary</button>
+    <button data-tab="catalogues">Catalogues &amp; standards</button>
+  </nav>
+  <label class="role">Role
+    <select id="roleSel"><option>planner</option><option>ie</option><option>hse</option><option>viewer</option></select>
+  </label>
+</header>
+
+<main>
+  <!-- AREAS -->
+  <section id="tab-areas" class="tab on">
+    <aside class="side">
+      <div class="side-head"><h3>Areas</h3><button id="newArea" class="small">+ New</button></div>
+      <ul id="areaList" class="list"></ul>
+      <button id="runAll" class="wide">Run all areas</button>
+    </aside>
+    <div class="content">
+      <details id="areaFormBox" open>
+        <summary>Area definition <span id="areaTitle" class="muted"></span></summary>
+        <form id="areaForm" class="grid-form"></form>
+        <div class="row">
+          <label>Crew (fitters) <input id="crew" type="number" value="5" min="1" max="20"></label>
+          <button id="saveArea">Save area</button>
+          <button id="runArea" class="primary">Run simulation</button>
+          <button id="delArea" class="danger small">Delete</button>
+        </div>
+      </details>
+      <div id="result"></div>
+    </div>
+  </section>
+
+  <!-- DRAWINGS -->
+  <section id="tab-drawings" class="tab">
+    <div class="content full">
+      <h2>Drawings</h2>
+      <p class="muted">DWG (converted server-side with the ODA File Converter), DXF, vector PDF. Navisworks (FBX export plug-in) and scanned-PDF tracing are phase 2.</p>
+      <div class="row">
+        <input type="file" id="fileIn" accept=".dxf,.dwg,.pdf">
+        <button id="uploadBtn" class="primary">Upload &amp; inspect</button>
+      </div>
+      <div id="wizard"></div>
+      <h2>Sections in project</h2>
+      <div id="sectionGrid" class="cards"></div>
+      <details>
+        <summary>Manual section editor (confidence: low until verified)</summary>
+        <div class="grid-form">
+          <label>Section id <input id="msId" value="MAN-1"></label>
+          <label>Frame <input id="msFrame" type="number" value="100"></label>
+          <label class="span2">Points y,z (m) one per line, keel → deck
+            <textarea id="msPts" rows="8">0,0
+6.0,0
+7.5,1.5
+7.8,6
+8.0,12</textarea></label>
+        </div>
+        <div class="row"><button id="msPreview">Preview</button><button id="msSave" class="primary">Save section</button></div>
+        <div id="msSvg"></div>
+      </details>
+    </div>
+  </section>
+
+  <!-- SUMMARY -->
+  <section id="tab-summary" class="tab"><div class="content full" id="summary"></div></section>
+
+  <!-- CATALOGUES -->
+  <section id="tab-catalogues" class="tab"><div class="content full" id="catalogues"></div></section>
+</main>
+<footer id="disclaimer" class="disclaimer"></footer>
+<script src="app.js"></script>
+</body>
+</html>

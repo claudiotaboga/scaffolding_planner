@@ -1,0 +1,97 @@
+{
+  "id": "SAMPLE-B12",
+  "name": "Sample vessel \u2014 block B12 (fore body)",
+  "vessel": "SAMPLE (synthetic)",
+  "frame_spacing_m": 0.7,
+  "drawings": [
+    {
+      "file": "B12_frame_sections.dxf",
+      "kind": "dxf",
+      "layer_mapping": {
+        "HULL_SHELL": "hull_shell",
+        "CL": "centreline",
+        "BL": "baseline",
+        "FRAME_NO": "frame_text",
+        "DIM": "dimension",
+        "DECK": "deck",
+        "OUTFIT_OBST": "obstruction",
+        "TITLE": "ignore"
+      },
+      "template": "SAMPLE-SECTIONS"
+    },
+    {
+      "file": "B12_frame_sections.pdf",
+      "kind": "pdf",
+      "page": 0,
+      "note": "vector export of the DXF (A1 plot)"
+    }
+  ],
+  "areas": [
+    {
+      "id": "B12-A1",
+      "name": "B12 SB side shell Fr128-140",
+      "area_type": "flat_shell",
+      "section_id": "FR128",
+      "frame_from": 128,
+      "frame_to": 140,
+      "frame_spacing_m": 0.7,
+      "z_base": -1.4,
+      "z_top": 14.0,
+      "anchorage": "tied",
+      "use_drawing_obstructions": true
+    },
+    {
+      "id": "B12-A2",
+      "name": "B12 SB bow flare Fr148-156",
+      "area_type": "bow_flare",
+      "section_id": "FR152",
+      "frame_from": 148,
+      "frame_to": 156,
+      "frame_spacing_m": 0.7,
+      "z_base": -1.4,
+      "z_top": 14.0,
+      "n_lifts": 7,
+      "anchorage": "tied"
+    },
+    {
+      "id": "B12-A3",
+      "name": "B12 SB fore shoulder Fr140-148",
+      "area_type": "curved_shell",
+      "section_id": "FR140",
+      "frame_from": 140,
+      "frame_to": 148,
+      "frame_spacing_m": 0.7,
+      "z_base": -1.4,
+      "z_top": 14.0,
+      "anchorage": "tied"
+    },
+    {
+      "id": "B12-A4",
+      "name": "Tank T12 SB inner shell, between bulkheads Fr130-139",
+      "area_type": "internal_compartment",
+      "section_id": "FR128",
+      "face": "inboard",
+      "frame_from": 130,
+      "frame_to": 139,
+      "frame_spacing_m": 0.7,
+      "run_start": "bounded",
+      "run_end": "bounded",
+      "z_base": 1.5,
+      "z_top": 9.5,
+      "anchorage": "tied"
+    },
+    {
+      "id": "REF-TOWER",
+      "name": "Reference tower (Rev02 slide 7)",
+      "area_type": "tower",
+      "tower_bays": 4,
+      "tower_bay_target_m": 2.5,
+      "tower_width_target_m": 1.1,
+      "n_lifts": 4,
+      "z_base": 0.0,
+      "z_top": 10.0,
+      "anchorage": "tied",
+      "protection": "all_sides"
+    }
+  ]
+}

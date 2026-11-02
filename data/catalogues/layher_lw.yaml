@@ -1,0 +1,71 @@
+# Layher Allround Lightweight (LW) — system catalogue
+# ALL weights are `estimate` placeholders until the planner loads the current Layher price list.
+# Grid and node data: Layher documentation / DIBt approvals Z-8.22-939 and Z-8.22-949.
+system_id: LAYHER_LW
+name: Layher Allround LW
+manufacturer: Layher
+catalogue_version: "2026.11-r1"
+default_source: "Layher price list (placeholder) / DIBt Z-8.22-939, Z-8.22-949"
+mixing_with_other_brands: false
+
+node: {type: rosette, holes: 8, pitch_m: 0.5, wedge: AutoLock}
+lift_height_m: 2.0
+bay_lengths_m: [0.73, 1.09, 1.40, 1.57, 2.07, 2.57, 3.07]
+bay_widths_m: [0.73, 1.09, 1.40]
+
+rules:
+  max_gap_without_bracket_m: {value: 0.20, status: estimate, source: "Set equal to SM8 to keep comparison neutral; confirm from Layher instructions"}
+  tie_area_m2: {value: 22.0, status: estimate, source: "Set equal to SM8 to keep comparison neutral; confirm from Layher approval tie pattern"}
+  load_class_by_bay: {value: {"0.73": 6, "1.09": 6, "1.40": 6, "1.57": 6, "2.07": 6, "2.57": 5, "3.07": 4}, status: estimate, source: "Typical Allround steel decks; confirm against approval for the configuration"}
+  decks_per_width: {value: {"0.73": 2, "1.09": 3, "1.40": 4}, status: estimate, source: "0.32 m steel decks"}
+  bracket_decks: {value: {"0.39": 1, "0.73": 2}, status: estimate, source: "0.32 m steel decks on brackets"}
+  diagonal_every_n_bays: {value: 5, status: estimate, source: "VSR default rule (editable)"}
+  free_standing_max_height_to_base: {value: 4.0, status: estimate, source: "VSR default rule; verify against manufacturer approval"}
+  advance_guardrail_available: {value: true, status: estimate, source: "Layher advance guardrail system"}
+
+hatch:
+  code: LAY-HATCH-257
+  bay_length_m: 2.57
+  replaces_decks: 2
+
+components:
+  - {code: LAY-STD-050, role: standard, length_m: 0.5, weight_kg: 2.90, status: estimate, name: "Standard LW 0.5 m"}
+  - {code: LAY-STD-100, role: standard, length_m: 1.0, weight_kg: 5.00, status: estimate, name: "Standard LW 1.0 m"}
+  - {code: LAY-STD-150, role: standard, length_m: 1.5, weight_kg: 7.10, status: estimate, name: "Standard LW 1.5 m"}
+  - {code: LAY-STD-200, role: standard, length_m: 2.0, weight_kg: 9.20, status: estimate, name: "Standard LW 2.0 m (brief placeholder)"}
+  - {code: LAY-STD-250, role: standard, length_m: 2.5, weight_kg: 11.30, status: estimate, name: "Standard LW 2.5 m"}
+  - {code: LAY-STD-300, role: standard, length_m: 3.0, weight_kg: 13.40, status: estimate, name: "Standard LW 3.0 m"}
+  - {code: LAY-STD-400, role: standard, length_m: 4.0, weight_kg: 17.60, status: estimate, name: "Standard LW 4.0 m"}
+  - {code: LAY-LED-073, role: ledger, length_m: 0.73, weight_kg: 3.40, status: estimate, name: "Ledger LW 0.73 m"}
+  - {code: LAY-LED-109, role: ledger, length_m: 1.09, weight_kg: 4.60, status: estimate, name: "Ledger LW 1.09 m (brief placeholder)"}
+  - {code: LAY-LED-140, role: ledger, length_m: 1.40, weight_kg: 5.60, status: estimate, name: "Ledger LW 1.40 m"}
+  - {code: LAY-LED-157, role: ledger, length_m: 1.57, weight_kg: 6.10, status: estimate, name: "Ledger LW 1.57 m"}
+  - {code: LAY-LED-207, role: ledger, length_m: 2.07, weight_kg: 7.40, status: estimate, name: "Ledger LW 2.07 m"}
+  - {code: LAY-LED-257, role: ledger, length_m: 2.57, weight_kg: 8.80, status: estimate, name: "Ledger LW 2.57 m (brief placeholder)"}
+  - {code: LAY-LED-307, role: ledger, length_m: 3.07, weight_kg: 10.20, status: estimate, name: "Ledger LW 3.07 m (brief placeholder)"}
+  - {code: LAY-DIA-073, role: diagonal, length_m: 0.73, weight_kg: 6.00, status: estimate, name: "Diagonal 2.0 x 0.73"}
+  - {code: LAY-DIA-109, role: diagonal, length_m: 1.09, weight_kg: 6.50, status: estimate, name: "Diagonal 2.0 x 1.09"}
+  - {code: LAY-DIA-140, role: diagonal, length_m: 1.40, weight_kg: 7.00, status: estimate, name: "Diagonal 2.0 x 1.40"}
+  - {code: LAY-DIA-157, role: diagonal, length_m: 1.57, weight_kg: 7.30, status: estimate, name: "Diagonal 2.0 x 1.57"}
+  - {code: LAY-DIA-207, role: diagonal, length_m: 2.07, weight_kg: 7.90, status: estimate, name: "Diagonal 2.0 x 2.07"}
+  - {code: LAY-DIA-257, role: diagonal, length_m: 2.57, weight_kg: 8.60, status: estimate, name: "Diagonal 2.0 x 2.57"}
+  - {code: LAY-DIA-307, role: diagonal, length_m: 3.07, weight_kg: 9.40, status: estimate, name: "Diagonal 2.0 x 3.07"}
+  - {code: LAY-DECK-073, role: deck, length_m: 0.73, width_m: 0.32, weight_kg: 5.50, status: estimate, name: "Steel deck LW 0.32x0.73"}
+  - {code: LAY-DECK-109, role: deck, length_m: 1.09, width_m: 0.32, weight_kg: 7.40, status: estimate, name: "Steel deck LW 0.32x1.09"}
+  - {code: LAY-DECK-140, role: deck, length_m: 1.40, width_m: 0.32, weight_kg: 8.50, status: estimate, name: "Steel deck LW 0.32x1.40"}
+  - {code: LAY-DECK-157, role: deck, length_m: 1.57, width_m: 0.32, weight_kg: 9.30, status: estimate, name: "Steel deck LW 0.32x1.57"}
+  - {code: LAY-DECK-207, role: deck, length_m: 2.07, width_m: 0.32, weight_kg: 12.20, status: estimate, name: "Steel deck LW 0.32x2.07"}
+  - {code: LAY-DECK-257, role: deck, length_m: 2.57, width_m: 0.32, weight_kg: 15.00, status: estimate, name: "Steel deck LW 0.32x2.57 (brief placeholder)"}
+  - {code: LAY-DECK-307, role: deck, length_m: 3.07, width_m: 0.32, weight_kg: 17.60, status: estimate, name: "Steel deck LW 0.32x3.07"}
+  - {code: LAY-HATCH-257, role: hatch, length_m: 2.57, width_m: 0.64, weight_kg: 25.00, status: estimate, name: "Alu hatch deck 2.57x0.64 with ladder"}
+  - {code: LAY-TOE-073, role: toe_board, length_m: 0.73, weight_kg: 2.00, status: estimate, name: "Toe board 0.73 m"}
+  - {code: LAY-TOE-109, role: toe_board, length_m: 1.09, weight_kg: 2.80, status: estimate, name: "Toe board 1.09 m"}
+  - {code: LAY-TOE-140, role: toe_board, length_m: 1.40, weight_kg: 3.60, status: estimate, name: "Toe board 1.40 m"}
+  - {code: LAY-TOE-157, role: toe_board, length_m: 1.57, weight_kg: 4.00, status: estimate, name: "Toe board 1.57 m"}
+  - {code: LAY-TOE-207, role: toe_board, length_m: 2.07, weight_kg: 5.20, status: estimate, name: "Toe board 2.07 m"}
+  - {code: LAY-TOE-257, role: toe_board, length_m: 2.57, weight_kg: 6.40, status: estimate, name: "Toe board 2.57 m"}
+  - {code: LAY-TOE-307, role: toe_board, length_m: 3.07, weight_kg: 7.60, status: estimate, name: "Toe board 3.07 m"}
+  - {code: LAY-BRK-039, role: bracket, length_m: 0.39, weight_kg: 3.80, status: estimate, name: "Bracket 0.39 m"}
+  - {code: LAY-BRK-073, role: bracket, length_m: 0.73, weight_kg: 6.80, status: estimate, name: "Bracket 0.73 m"}
+  - {code: LAY-JACK-060, role: base_jack, length_m: 0.60, weight_kg: 3.60, status: estimate, name: "Base jack 0.60 m"}
+  - {code: LAY-TIE-050, role: tie, length_m: 0.50, weight_kg: 3.20, status: estimate, name: "Wall tie 0.5 m + coupler"}
