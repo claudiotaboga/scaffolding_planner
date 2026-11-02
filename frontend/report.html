@@ -20,6 +20,7 @@
 </head>
 <body>
 <button onclick="window.print()" style="float:right">Print / PDF</button>
+<a href="module.html" target="_blank" style="float:right;margin-right:8px"><button>Module card</button></a>
 <div id="r">Loading…</div>
 <script>
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));

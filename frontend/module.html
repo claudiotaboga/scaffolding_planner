@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Module Comparison Card</title>
+<style>
+  @page { size: A4 portrait; margin: 12mm; }
+  body { font: 12px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: #1d232b; max-width: 820px; margin: 18px auto; padding: 0 16px; background: #fff; }
+  h1 { font-size: 19px; margin: 2px 0; } h2 { font-size: 13px; margin: 14px 0 5px; border-bottom: 2px solid #10243e; padding-bottom: 2px; text-transform: uppercase; letter-spacing: .03em; }
+  .muted { color: #6b7480; } .head { font-size: 16px; font-weight: 700; margin: 8px 0 4px; }
+  table { border-collapse: collapse; width: 100%; } th, td { border-bottom: 1px solid #d9dde3; padding: 3px 6px; text-align: left; }
+  th { background: #f0f2f5; font-weight: 600; } td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
+  .sm8 { color: #c2410c; } .lay { color: #1d4ed8; } .good { color: #15803d; font-weight: 600; } .bad { color: #b91c1c; font-weight: 600; }
+  .est { background: #fff2cc; } .tag { font-size: 10px; padding: 0 5px; border-radius: 8px; border: 1px solid #b45309; color: #b45309; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .box { border: 1px solid #d9dde3; border-radius: 6px; padding: 8px 10px; }
+  .bars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .disc { font-size: 10px; border: 1px solid #d9dde3; padding: 6px 8px; margin-top: 12px; background: #fafafa; }
+  .ctl { display: flex; gap: 8px; flex-wrap: wrap; align-items: end; background: #f5f6f8; padding: 8px; border-radius: 6px; margin-bottom: 10px; }
+  .ctl label { display: flex; flex-direction: column; font-size: 11px; color: #6b7480; }
+  .ctl input { width: 78px; padding: 3px 5px; font: inherit; }
+  button { padding: 5px 10px; font: inherit; cursor: pointer; }
+  ul { margin: 4px 0; padding-left: 18px; } li { margin: 2px 0; }
+  @media (max-width: 640px) { .grid, .bars { grid-template-columns: 1fr; } }
+  @media print {
+    .ctl { display: none; } body { margin: 0; max-width: none; padding: 0; font-size: 10px; line-height: 1.3; }
+    h1 { font-size: 16px; } .head { font-size: 13px; margin: 4px 0 2px; } h2 { margin: 8px 0 3px; font-size: 11px; }
+    th, td { padding: 2px 5px; } .bars svg { max-height: 48px; } .box { padding: 5px 8px; } .disc { margin-top: 6px; font-size: 9px; }
+    ul, ol { margin: 2px 0; } li { margin: 1px 0; } .grid { gap: 10px; }
+  }
+</style>
+</head>
+<body>
+<div class="ctl">
+  <label>SM8 bay <input id="sb" type="number" step="0.01" value="2.50"></label>
+  <label>SM8 width <input id="sw" type="number" step="0.01" value="1.14"></label>
+  <label>Layher bay <input id="lb" type="number" step="0.01" value="2.57"></label>
+  <label>Layher width <input id="lw" type="number" step="0.01" value="1.09"></label>
+  <label>Façade bays <input id="nb" type="number" value="10"></label>
+  <label>Lifts (2 m) <input id="nl" type="number" value="4"></label>
+  <label>Crew <input id="cr" type="number" value="5"></label>
+  <button id="go">Update</button><button onclick="window.print()">Print / PDF</button>
+</div>
+<div id="card">Loading…</div>
+<script>
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const f = (v, d = 2) => v === null || v === undefined ? "–" : Number(v).toLocaleString("en-GB", { maximumFractionDigits: d, minimumFractionDigits: d });
+const CLS = { SM8: "sm8", LAYHER_LW: "lay" }, COL = { SM8: "#c2410c", LAYHER_LW: "#1d4ed8" };
+const $ = (id) => document.getElementById(id);
+function delta(a, b, lowerBetter = true, d = 1) {
+  if (!a) return "–";
+  const p = (b - a) / a * 100; if (Math.abs(p) < 0.05) return "0%";
+  const good = lowerBetter ? p < 0 : p > 0;
+  return `<span class="${good ? "good" : "bad"}">${p > 0 ? "+" : ""}${p.toFixed(d)}%</span>`;
+}
+function bars(title, unit, rows, dec) {
+  const max = Math.max(...rows.map((r) => r[1]), 1e-9);
+  return `<div><b>${esc(title)}</b> <span class="muted">${esc(unit)}</span><svg viewBox="0 0 260 62" width="100%">${rows.map(([s, v, name], i) =>
+    `<rect x="62" y="${i * 30 + 4}" width="${(150 * v / max).toFixed(1)}" height="20" fill="${COL[s] || "#6d28d9"}"/><text x="0" y="${i * 30 + 18}" font-size="11">${esc(name)}</text><text x="${(66 + 150 * v / max).toFixed(1)}" y="${i * 30 + 18}" font-size="11">${f(v, dec)}</text>`).join("")}</svg></div>`;
+}
+async function load() {
+  const q = new URLSearchParams({ sm8_bay: $("sb").value, sm8_width: $("sw").value, layher_bay: $("lb").value, layher_width: $("lw").value, bays: $("nb").value, lifts: $("nl").value, crew: $("cr").value });
+  const r = await fetch("/api/module-card?" + q);
+  if (!r.ok) { $("card").textContent = "Error: " + (await r.text()); return; }
+  const c = await r.json();
+  const a = c.deltas.base, b = c.deltas.other, A = c.systems[a], B = c.systems[b];
+  const short = (s) => s === "SM8" ? "SM8" : "Layher";
+  const lbl = (s) => `<span class="${CLS[s]}">${esc(c.systems[s].name)}</span>`;
+  const estTag = (s) => c.systems[s].facade.estimate_weight_share > 0.2 ? ` <span class="tag">${f(100 * c.systems[s].facade.estimate_weight_share, 0)}% est.</span>` : "";
+  const rows = [
+    ["Bay × width (m)", `${f(A.bay_m)} × ${f(A.width_m)}`, `${f(B.bay_m)} × ${f(B.width_m)}`, ""],
+    ["Deck area per bay (m²)", f(A.deck_area_m2), f(B.deck_area_m2), delta(A.deck_area_m2, B.deck_area_m2, false)],
+    ["Decks across × width", `${A.decks_across} × ${f(A.deck_width_m * 1000, 0)} mm (${f(100 * A.deck_coverage, 0)}%)`, `${B.decks_across} × ${f(B.deck_width_m * 1000, 0)} mm (${f(100 * B.deck_coverage, 0)}%)`, ""],
+    ["Clear platform width (m)", f(A.width_m), f(B.width_m), delta(A.width_m, B.width_m, false)],
+    ["Load class at this bay", `${A.load_class}${A.load_class_status === "estimate" ? ' <span class="tag">est.</span>' : ""}`, `${B.load_class}${B.load_class_status === "estimate" ? ' <span class="tag">est.</span>' : ""}`, ""],
+    ["Node / wedge", `${esc(A.node.type)}, ${esc(A.node.wedge)} wedge`, `${esc(B.node.type)}, ${esc(B.node.wedge)} wedge`, ""],
+  ];
+  const F = (k, d = 2, lower = true) => [f(A.facade[k], d), f(B.facade[k], d), delta(A.facade[k], B.facade[k], lower)];
+  const fac = [
+    ["Face area (m²)", ...F("area_m2", 1, false).slice(0, 2), ""],
+    ["Pieces / nodes / wedges", `${A.pieces} / ${A.facade.nodes} / ${A.facade.wedges}`, `${B.pieces} / ${B.facade.nodes} / ${B.facade.wedges}`, c.deltas.same_topology ? "identical" : "differs"],
+    ["Weight (t)", f(A.facade.weight_t) + estTag(a), f(B.facade.weight_t) + estTag(b), delta(A.facade.weight_t, B.facade.weight_t)],
+    ["kg per m²", ...F("kg_per_m2", 1)],
+    [`Erection man-hours (crew ${c.crew})`, ...F("crew_hours", 1)],
+    ["Elapsed (min)", ...F("elapsed_min", 0)],
+    ["m² per man-hour", ...F("m2_per_man_hour", 1, false)],
+    ["Extra bay, all lifts: kg", f(A.marginal_bay.weight_kg, 0), f(B.marginal_bay.weight_kg, 0), delta(A.marginal_bay.weight_kg, B.marginal_bay.weight_kg)],
+    ["Extra bay, all lifts: man-h", f(A.marginal_bay.crew_hours, 2), f(B.marginal_bay.crew_hours, 2), delta(A.marginal_bay.crew_hours, B.marginal_bay.crew_hours)],
+    ["Unsecured-connection exposure (man-h)", ...F("unsecured_exposure_h", 2)],
+    ["Cost per m² (EUR)", f(A.cost_eur_per_m2), f(B.cost_eur_per_m2), delta(A.cost_eur_per_m2, B.cost_eur_per_m2)],
+  ];
+  const comps = Object.keys(A.components).map((k) => {
+    const x = A.components[k], y = B.components[k];
+    return `<tr><td>${esc(k)}</td><td class="${x?.status === "estimate" ? "est" : ""}">${x ? esc(x.code) : "–"}</td><td class="n ${x?.status === "estimate" ? "est" : ""}">${x ? f(x.weight_kg) : "–"}</td><td class="${y?.status === "estimate" ? "est" : ""}">${y ? esc(y.code) : "–"}</td><td class="n ${y?.status === "estimate" ? "est" : ""}">${y ? f(y.weight_kg) : "–"}</td><td class="n">${x && y ? delta(x.weight_kg, y.weight_kg) : "–"}</td></tr>`;
+  }).join("");
+  const v = (s) => c.systems[s].versions;
+  $("card").innerHTML = `
+  <div class="muted">VARD Shipyards Romania · Scaffold Planner · module comparison card · ${new Date().toISOString().slice(0, 10)}</div>
+  <h1>${lbl(a)} ${f(A.bay_m)} × ${f(A.width_m)} m &nbsp;vs&nbsp; ${lbl(b)} ${f(B.bay_m)} × ${f(B.width_m)} m</h1>
+  <div class="head">${esc(c.verdict.headline)}</div>
+  <ul>${c.verdict.lines.map((l) => `<li>${esc(l)}</li>`).join("")}</ul>
+  <h2>Key figures — straight façade, ${c.bays} bays × ${c.lifts} lifts (${f(2 * c.lifts, 0)} m), tied</h2>
+  <div class="bars">
+    ${bars("Man-hours per m²", "lower is better", [[a, A.facade.crew_hours / A.facade.area_m2, short(a)], [b, B.facade.crew_hours / B.facade.area_m2, short(b)]], 3)}
+    ${bars("kg per m²", "lower is better", [[a, A.facade.kg_per_m2, short(a)], [b, B.facade.kg_per_m2, short(b)]], 1)}
+    ${bars("EUR per m²", "lower is better", [[a, A.cost_eur_per_m2, short(a)], [b, B.cost_eur_per_m2, short(b)]], 2)}
+  </div>
+  <div class="grid">
+    <div><table><tr><th>Module</th><th class="${CLS[a]}">${short(a)}</th><th class="${CLS[b]}">${short(b)}</th><th class="n">Δ</th></tr>
+      ${rows.map((r) => `<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td class="n">${r[3]}</td></tr>`).join("")}</table></div>
+    <div><table><tr><th>Façade</th><th class="n ${CLS[a]}">${short(a)}</th><th class="n ${CLS[b]}">${short(b)}</th><th class="n">Δ ${short(b)}</th></tr>
+      ${fac.map((r) => `<tr><td>${r[0]}</td><td class="n">${r[1]}</td><td class="n">${r[2]}</td><td class="n">${r[3]}</td></tr>`).join("")}</table></div>
+  </div>
+  <h2>Where the weight sits — unit weights (kg)</h2>
+  <table><tr><th>Component</th><th class="${CLS[a]}">${short(a)} code</th><th class="n">kg</th><th class="${CLS[b]}">${short(b)} code</th><th class="n">kg</th><th class="n">Δ</th></tr>${comps}</table>
+  <div class="muted" style="font-size:10px">Highlighted = <b>estimate</b> (not verified). Δ is ${short(b)} vs ${short(a)}; green = better.</div>
+  <div class="grid">
+    <div class="box"><b>To confirm before deciding</b><ol>${c.verdict.checks.map((x) => `<li>${esc(x)}</li>`).join("")}</ol></div>
+    <div class="box"><b>Scope</b><p style="margin:4px 0">${esc(c.verdict.scope_note)}</p>
+      <p class="muted" style="margin:4px 0;font-size:10px">${short(a)}: catalogue ${esc(v(a).catalogue.catalogue_version)} (${esc(v(a).catalogue.sha256)}), time std ${esc(v(a).time_standard.version)} [${esc(v(a).time_standard.status)}].<br>
+      ${short(b)}: catalogue ${esc(v(b).catalogue.catalogue_version)} (${esc(v(b).catalogue.sha256)}), time std ${esc(v(b).time_standard.version)} [${esc(v(b).time_standard.status)}].<br>
+      Cost: 1-month rental + labour (erection + dismantling) + transport, settings in data/settings.yaml.</p></div>
+  </div>
+  <div class="disc"><b>Disclaimer.</b> ${esc(c.disclaimer)}</div>`;
+}
+const p = new URLSearchParams(location.search);
+for (const [k, id] of [["sm8_bay", "sb"], ["sm8_width", "sw"], ["layher_bay", "lb"], ["layher_width", "lw"], ["bays", "nb"], ["lifts", "nl"], ["crew", "cr"]]) if (p.get(k)) $(id).value = p.get(k);
+$("go").onclick = load;
+load();
+</script>
+</body>
+</html>

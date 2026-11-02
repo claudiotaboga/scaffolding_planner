@@ -348,6 +348,18 @@ def run_trace(rid: str, system: str):
                              headers={"Content-Disposition": f'attachment; filename="trace_{system}_{rid}.csv"'})
 
 
+@app.get("/api/module-card")
+def module_card_api(sm8_bay: float = 2.50, sm8_width: float = 1.14, layher_bay: float = 2.57,
+                    layher_width: float = 1.09, bays: int = 10, lifts: int = 4, crew: int = 5):
+    """One-page module comparison (straight reference facade) for the two configurations."""
+    from ..engine.module import module_card
+    try:
+        return module_card(bundle(), {"SM8": (sm8_bay, sm8_width), "LAYHER_LW": (layher_bay, layher_width)},
+                           bays, lifts, crew)
+    except ValueError as e:
+        raise HTTPException(422, str(e))
+
+
 @app.get("/api/projects/{pid}/summary")
 def summary(pid: str):
     _project(pid)

@@ -24,7 +24,7 @@ async function busy(btn, fn) { btn.disabled = true; try { return await fn(); } c
 async function init() {
   state.meta = await api("/api/meta");
   $("#disclaimer").textContent = "⚠ " + state.meta.disclaimer;
-  $$("#tabs button").forEach((b) => b.onclick = () => showTab(b.dataset.tab));
+  $$("#tabs button[data-tab]").forEach((b) => b.onclick = () => showTab(b.dataset.tab));
   $("#projectSel").onchange = () => loadProject($("#projectSel").value);
   await loadProjects();
   $("#newArea").onclick = () => editArea(null);
@@ -36,7 +36,7 @@ async function init() {
   $("#msPreview").onclick = () => { $("#msSvg").innerHTML = miniSection(manualSection()); };
   $("#msSave").onclick = (e) => busy(e.target, async () => { await api(`/api/projects/${state.project.id}/sections`, { method: "POST", body: manualSection() }); await loadProject(state.project.id); toast("Section saved (confidence low until verified)."); });
 }
-function showTab(t) { $$("#tabs button").forEach((b) => b.classList.toggle("on", b.dataset.tab === t)); $$(".tab").forEach((s) => s.classList.toggle("on", s.id === "tab-" + t)); if (t === "summary") renderSummary(); if (t === "catalogues") renderCatalogues(); if (t === "drawings") renderDrawings(); }
+function showTab(t) { $$("#tabs button[data-tab]").forEach((b) => b.classList.toggle("on", b.dataset.tab === t)); $$(".tab").forEach((s) => s.classList.toggle("on", s.id === "tab-" + t)); if (t === "summary") renderSummary(); if (t === "catalogues") renderCatalogues(); if (t === "drawings") renderDrawings(); }
 
 async function loadProjects() {
   const ps = await api("/api/projects");
